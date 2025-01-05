@@ -1,16 +1,7 @@
 class Solution {
-    string buildcycle(){
-        string s="";
-        for (int i=0 ; i<26 ; i++){
-            s+= char('a'+i);
-        }
-        return s;
-    }
 public:
     string shiftingLetters(string s, vector<vector<int>>& shifts) {
         int n = s.size();
-
-        string cycle = buildcycle();
         int ptr = 0;
 
         vector <int> par(n+1,0);
@@ -27,12 +18,8 @@ public:
 
         for (int i=0 ; i<n ;i++){
             ptr = s[i]-'a';
-            if (par[i]>=0){
-                s[i] = 'a'+ ((ptr + par[i])%26);
-            }else{
-                int op = ptr + par[i]  ;
-                s[i] = 'a' + ((op%26 + 26)%26); 
-            }
+            int op = ptr + par[i]  ;
+            s[i] = 'a' + ((op%26 + 26)%26); 
         }
 
         return s;
