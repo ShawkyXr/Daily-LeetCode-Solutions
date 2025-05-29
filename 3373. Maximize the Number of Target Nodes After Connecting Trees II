@@ -1,0 +1,63 @@
+class Solution {
+    vector <vector<int>> adj1,adj2;
+
+    int mxeven(int u,int p,bool isodd){
+        int ans = 0;
+        for (auto &v : adj2[u]){
+            if (v==p) continue;
+            if (isodd) ans += 1 + mxeven(v,u,!isodd);
+            else ans +=  mxeven(v,u,!isodd);
+        }
+
+        return ans;
+    }
+
+    vector <bool> iseven;
+    void claceven(int u,int p,bool even){
+        iseven[u] = even;
+        for (auto &v : adj1[u]){
+            if (v==p) continue;
+            if (even) claceven(v,u,0);
+            else claceven(v,u,1);
+        }
+
+    }
+public:
+    vector<int> maxTargetNodes(vector<vector<int>>& edges1, vector<vector<int>>& edges2) {
+        int n = edges1.size() +1 , m = edges2.size()+1;
+        adj1.assign(n+1,vector<int>());
+        adj2.assign(m+1,vector<int>());
+        iseven.assign(n,0);
+
+        for (auto &e : edges1){
+            adj1[e[0]].push_back(e[1]);
+            adj1[e[1]].push_back(e[0]);
+        }
+
+        for (auto &e : edges2){
+            adj2[e[1]].push_back(e[0]);
+            adj2[e[0]].push_back(e[1]);
+        }
+
+        int mxnode1 = 0, mxnode2 = adj2[0][0];
+        int mxnodes = mxeven(mxnode1,-1,1);
+        mxnodes = max(mxnodes,mxeven(mxnode2,-1,1));
+
+        claceven(0,-1,1);
+        int evennodes = 0;
+        for (int i=0 ; i<n ; i++){
+            if (iseven[i]) evennodes++;
+        }
+
+        vector <int> ans(n,mxnodes);
+        for (int i=0 ; i<n ; i++){
+            if (iseven[i]){
+                ans[i] += evennodes;
+            }else{
+                ans[i] += (n-evennodes);
+            }
+        }
+
+        return ans;
+    }
+};
